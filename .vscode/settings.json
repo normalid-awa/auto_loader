@@ -128,6 +128,9 @@
 		"ui.h": "c",
 		"lv_types.h": "c",
 		"lv_demos.h": "c",
-		"lvgl_ui.h": "c"
+		"lvgl_ui.h": "c",
+		"eez-flow.h": "c",
+		"stdint.h": "c",
+		"lvgl_init.h": "c"
 	}
 }

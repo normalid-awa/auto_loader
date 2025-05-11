@@ -19,51 +19,11 @@
 #include "esp_lcd_panel_st7789.h"
 #include "esp_lcd_touch_cst816s.h"
 
-static const char *LVGL_TASK_TAG = "LVGL Task";
+#include "lvgl_init.h"
 
-#define LCD_HOST SPI2_HOST
-#define LCD_PIXEL_CLOCK_HZ (20 * 1000 * 1000) // 20MHz
-#define LCD_BK_LIGHT_ON_LEVEL 1
-#define LCD_BK_LIGHT_OFF_LEVEL 0
-
-#define PIN_NUM_SCLK GPIO_NUM_2
-#define PIN_NUM_MOSI GPIO_NUM_1
-#define PIN_NUM_MISO -1
-
-#define PIN_NUM_LCD_DC GPIO_NUM_4
-#define PIN_NUM_LCD_RST GPIO_NUM_5
-#define PIN_NUM_LCD_CS GPIO_NUM_3
-#define PIN_NUM_LCD_BK_LIGHT GPIO_NUM_10
-
-#define PIN_NUM_TOUCH_RST GPIO_NUM_11
-#define PIN_NUM_TOUCH_INT GPIO_NUM_25
-#define PIN_NUM_TOUCH_SCL GPIO_NUM_22
-#define PIN_NUM_TOUCH_SDA GPIO_NUM_12
-#define TOUCH_I2C_NUM I2C_NUM_0
-#define TOUCH_I2C_HZ 100000
-
-// The pixel number in horizontal and vertical
-#define LCD_H_RES 240
-#define LCD_V_RES 320
-
-// Bit number used to represent command and parameter
-#define LCD_CMD_BITS 8
-#define LCD_PARAM_BITS 8
-
-#define LVGL_DRAW_BUF_LINES 20 // number of display lines in each draw buffer
-#define LVGL_TICK_PERIOD_MS 2
-#define LVGL_TASK_MAX_DELAY_MS 500
-#define LVGL_TASK_MIN_DELAY_MS 1
-#define LVGL_TASK_STACK_SIZE (5 * 1024)
-#define LVGL_TASK_PRIORITY 2
 #pragma region LVGL
 
-esp_lcd_touch_handle_t touch_handle = NULL;
-
-// LVGL library is not thread-safe, this example will call LVGL APIs from different tasks, so use a mutex to protect it
-static _lock_t lvgl_api_lock;
-
-extern void lvgl_demo_ui(lv_disp_t *disp);
+static const char *LVGL_TASK_TAG = "LVGL Task";
 
 static bool notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx)
 {
@@ -156,7 +116,7 @@ static void increase_lvgl_tick(void *arg)
     lv_tick_inc(LVGL_TICK_PERIOD_MS);
 }
 
-static void lvgl_port_task(void *arg)
+void lvgl_port_task(void *arg)
 {
     ESP_LOGI(LVGL_TASK_TAG, "Starting LVGL task");
     uint32_t time_till_next_ms = 0;
@@ -172,7 +132,7 @@ static void lvgl_port_task(void *arg)
     }
 }
 
-lv_display_t *lvgl_init(esp_lcd_touch_handle_t *out_touch_handle)
+lv_display_t *lvgl_init()
 {
 
 #pragma region LCD_INIT
@@ -316,7 +276,6 @@ lv_display_t *lvgl_init(esp_lcd_touch_handle_t *out_touch_handle)
 
 #pragma endregion
 
-    *out_touch_handle = tp_handle;
     return display;
 }
 

@@ -166,7 +166,8 @@
                       "enableClose": false,
                       "icon": "svg:hierarchy"
                     }
-                  ]
+                  ],
+                  "active": true
                 },
                 {
                   "type": "tabset",
@@ -217,8 +218,7 @@
                   },
                   "icon": "svg:page"
                 }
-              ],
-              "active": true
+              ]
             },
             {
               "type": "row",
@@ -480,7 +480,8 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -524,8 +525,7 @@
                       "enableClose": false,
                       "icon": "svg:log"
                     }
-                  ],
-                  "active": true
+                  ]
                 }
               ]
             }
@@ -1009,9 +1009,12 @@
         "0": {
           "0": {
             "0": {
-              "0": {},
-              "1": {
-                "2": {}
+              "0": {
+                "0": {
+                  "0": {
+                    "$selected": true
+                  }
+                }
               }
             },
             "1": {}
@@ -1020,8 +1023,8 @@
       },
       "transform": {
         "translate": {
-          "x": -248.04166666666663,
-          "y": -193.09375
+          "x": -122.46969696969694,
+          "y": -268.25978535353534
         },
         "scale": 1.25
       },
@@ -1090,7 +1093,7 @@
   "searchMatchWholeWord": false,
   "replaceEnabled": false,
   "replaceText": "",
-  "pageRuntimeFrontFace": false,
+  "pageRuntimeFrontFace": true,
   "breakpoints": {},
   "watchExpressions": [],
   "showComponentDescriptions": true,
@@ -1100,12 +1103,12 @@
   "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
     "MISCELLANEOUS",
-    "POSITION AND SIZE",
     "TEXT",
     "BACKGROUND",
     "LAYOUT",
     "MARGIN",
-    "PADDING"
+    "PADDING",
+    "POSITION AND SIZE"
   ],
   "showInactiveFlowsInDebugger": false,
   "globalFlowZoom": true,
