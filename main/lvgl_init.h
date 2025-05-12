@@ -32,7 +32,7 @@
 #define LCD_CMD_BITS 8
 #define LCD_PARAM_BITS 8
 
-#define LVGL_DRAW_BUF_LINES 20 // number of display lines in each draw buffer
+#define LVGL_DRAW_BUF_LINES 80 // number of display lines in each draw buffer
 #define LVGL_TICK_PERIOD_MS 2
 #define LVGL_TASK_MAX_DELAY_MS 500
 #define LVGL_TASK_MIN_DELAY_MS 1

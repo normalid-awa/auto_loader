@@ -10,6 +10,7 @@
 
 #include "screens.h"
 #include "ui.h"
+#include "vars.h"
 
 void app_main()
 {
