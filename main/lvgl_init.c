@@ -139,7 +139,7 @@ void log_cb(lv_log_level_t level, const char *buf)
     switch (level)
     {
     case LV_LOG_LEVEL_TRACE:
-        // ESP_LOGV(LVGL_LOG_TAG "%s", buf);
+        ESP_LOGV(LVGL_LOG_TAG, "%s", buf);
         break;
     case LV_LOG_LEVEL_INFO:
         ESP_LOGI(LVGL_LOG_TAG, "%s", buf);
