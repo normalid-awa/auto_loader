@@ -24,6 +24,7 @@
 #pragma region LVGL
 
 static const char *LVGL_TASK_TAG = "LVGL Task";
+static const char *LVGL_LOG_TAG = "LVGL Log";
 
 static bool notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx)
 {
@@ -125,10 +126,35 @@ void lvgl_port_task(void *arg)
     {
         _lock_acquire(&lvgl_api_lock);
         time_till_next_ms = lv_timer_handler();
+        ESP_LOGI(LVGL_TASK_TAG, "LVGL task");
         _lock_release(&lvgl_api_lock);
         // in case of triggering a task watch dog time out
         time_till_next_ms = MAX(time_till_next_ms, time_threshold_ms);
         usleep(1000 * time_till_next_ms);
+    }
+}
+
+void log_cb(lv_log_level_t level, const char *buf)
+{
+    switch (level)
+    {
+    case LV_LOG_LEVEL_TRACE:
+        // ESP_LOGV(LVGL_LOG_TAG "%s", buf);
+        break;
+    case LV_LOG_LEVEL_INFO:
+        ESP_LOGI(LVGL_LOG_TAG, "%s", buf);
+        break;
+    case LV_LOG_LEVEL_WARN:
+        ESP_LOGW(LVGL_LOG_TAG, "%s", buf);
+        break;
+    case LV_LOG_LEVEL_ERROR:
+        ESP_LOGE(LVGL_LOG_TAG, "%s", buf);
+        break;
+    case LV_LOG_LEVEL_USER:
+    case LV_LOG_LEVEL_NONE:
+        ESP_LOGI(LVGL_LOG_TAG, "%s", buf);
+    default:
+        break;
     }
 }
 
@@ -221,6 +247,7 @@ lv_display_t *lvgl_init()
     };
     /* Register done callback */
     ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(lcd_io_handle, &cbs, display));
+    lv_log_register_print_cb(log_cb);
 
 #pragma endregion
 
