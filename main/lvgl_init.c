@@ -126,7 +126,6 @@ void lvgl_port_task(void *arg)
     {
         _lock_acquire(&lvgl_api_lock);
         time_till_next_ms = lv_timer_handler();
-        ESP_LOGI(LVGL_TASK_TAG, "LVGL task");
         _lock_release(&lvgl_api_lock);
         // in case of triggering a task watch dog time out
         time_till_next_ms = MAX(time_till_next_ms, time_threshold_ms);
