@@ -36,7 +36,7 @@
 #define LVGL_TICK_PERIOD_MS 2
 #define LVGL_TASK_MAX_DELAY_MS 500
 #define LVGL_TASK_MIN_DELAY_MS 1
-#define LVGL_TASK_STACK_SIZE (5 * 1024)
+#define LVGL_TASK_STACK_SIZE (6 * 1024)
 #define LVGL_TASK_PRIORITY 2
 
 // LVGL library is not thread-safe, this example will call LVGL APIs from different tasks, so use a mutex to protect it

@@ -1,3 +1,3 @@
-idf_component_register(SRCS "eez-flow.cpp" "images.c" "screens.c" "styles.c" "ui.c" "vars.c"
+idf_component_register(SRCS "eez-flow.cpp" "images.c" "screens.c" "styles.c" "ui.c" "vars.c" "eez-flow-lz4.c"
                        INCLUDE_DIRS "." 
                        REQUIRES lvgl)

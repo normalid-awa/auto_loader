@@ -99,7 +99,7 @@
       "lvglInclude": "lvgl.h",
       "screensLifetimeSupport": false,
       "generateSourceCodeForEezFramework": true,
-      "compressFlowDefinition": false,
+      "compressFlowDefinition": true,
       "executionQueueSize": 1000,
       "expressionEvaluatorStackSize": 20
     }
