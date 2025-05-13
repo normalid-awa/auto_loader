@@ -15,15 +15,12 @@ extern "C" {
 // Flow global variables
 
 enum FlowGlobalVariables {
-    FLOW_GLOBAL_VARIABLE_NONE
+    FLOW_GLOBAL_VARIABLE_MAX = 0,
+    FLOW_GLOBAL_VARIABLE_CURRENT = 1
 };
 
 // Native global variables
 
-extern int32_t get_var_max();
-extern void set_var_max(int32_t value);
-extern int32_t get_var_current();
-extern void set_var_current(int32_t value);
 
 
 #ifdef __cplusplus

@@ -131,6 +131,8 @@
 		"lvgl_ui.h": "c",
 		"eez-flow.h": "c",
 		"stdint.h": "c",
-		"lvgl_init.h": "c"
+		"lvgl_init.h": "c",
+		"stdbool.h": "c",
+		"structs.h": "c"
 	}
 }

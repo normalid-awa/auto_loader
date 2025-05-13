@@ -13,7 +13,18 @@
 objects_t objects;
 lv_obj_t *tick_value_change_obj;
 
-static void event_handler_cb_main_obj0(lv_event_t *e) {
+static void event_handler_cb_main_main(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    (void)flowState;
+    
+    if (event == LV_EVENT_CLICKED) {
+        e->user_data = (void *)0;
+        action_button_matrix_clicked(e);
+    }
+}
+
+static void event_handler_cb_main_obj1(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
@@ -27,6 +38,17 @@ static void event_handler_cb_main_obj0(lv_event_t *e) {
     }
 }
 
+static void event_handler_cb_main_obj0(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    (void)flowState;
+    
+    if (event == LV_EVENT_CLICKED) {
+        e->user_data = (void *)0;
+        action_button_matrix_clicked(e);
+    }
+}
+
 void create_screen_main() {
     void *flowState = getFlowState(0, 0);
     (void)flowState;
@@ -34,6 +56,7 @@ void create_screen_main() {
     objects.main = obj;
     lv_obj_set_pos(obj, 0, 0);
     lv_obj_set_size(obj, 320, 240);
+    lv_obj_add_event_cb(obj, event_handler_cb_main_main, LV_EVENT_ALL, flowState);
     {
         lv_obj_t *parent_obj = obj;
         {
@@ -87,14 +110,14 @@ void create_screen_main() {
                                         lv_obj_t *parent_obj = obj;
                                         {
                                             lv_obj_t *obj = lv_arc_create(parent_obj);
-                                            objects.obj0 = obj;
+                                            objects.obj1 = obj;
                                             lv_obj_set_pos(obj, 0, 0);
                                             lv_obj_set_size(obj, 150, 150);
                                             lv_arc_set_range(obj, 0, 100);
                                             lv_arc_set_bg_start_angle(obj, 0);
                                             lv_arc_set_bg_end_angle(obj, 359);
                                             lv_arc_set_rotation(obj, -90);
-                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj0, LV_EVENT_ALL, flowState);
+                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj1, LV_EVENT_ALL, flowState);
                                             lv_obj_set_style_opa(obj, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
                                             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
                                         }
@@ -132,6 +155,7 @@ void create_screen_main() {
                                 }
                                 {
                                     lv_obj_t *obj = lv_buttonmatrix_create(parent_obj);
+                                    objects.obj0 = obj;
                                     lv_obj_set_pos(obj, 207, 0);
                                     lv_obj_set_size(obj, 90, LV_PCT(100));
                                     static const char *map[6] = {
@@ -143,6 +167,7 @@ void create_screen_main() {
                                         NULL,
                                     };
                                     lv_buttonmatrix_set_map(obj, map);
+                                    lv_obj_add_event_cb(obj, event_handler_cb_main_obj0, LV_EVENT_ALL, flowState);
                                     lv_obj_set_style_layout(obj, LV_LAYOUT_NONE, LV_PART_ITEMS | LV_STATE_DEFAULT);
                                     lv_obj_set_style_align(obj, LV_ALIGN_DEFAULT, LV_PART_ITEMS | LV_STATE_DEFAULT);
                                 }
@@ -167,23 +192,23 @@ void tick_screen_main() {
     (void)flowState;
     {
         int32_t new_val = evalIntegerProperty(flowState, 5, 3, "Failed to evaluate Range max in Arc widget");
-        int32_t cur_val = lv_arc_get_max_value(objects.obj0);
+        int32_t cur_val = lv_arc_get_max_value(objects.obj1);
         if (new_val != cur_val) {
-            tick_value_change_obj = objects.obj0;
-            int16_t min = lv_arc_get_min_value(objects.obj0);
+            tick_value_change_obj = objects.obj1;
+            int16_t min = lv_arc_get_min_value(objects.obj1);
             int16_t max = new_val;
             if (min < max) {
-                lv_arc_set_range(objects.obj0, min, max);
+                lv_arc_set_range(objects.obj1, min, max);
             }
             tick_value_change_obj = NULL;
         }
     }
     {
         int32_t new_val = evalIntegerProperty(flowState, 5, 4, "Failed to evaluate Value in Arc widget");
-        int32_t cur_val = lv_arc_get_value(objects.obj0);
+        int32_t cur_val = lv_arc_get_value(objects.obj1);
         if (new_val != cur_val) {
-            tick_value_change_obj = objects.obj0;
-            lv_arc_set_value(objects.obj0, new_val);
+            tick_value_change_obj = objects.obj1;
+            lv_arc_set_value(objects.obj1, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -209,7 +234,7 @@ void tick_screen_main() {
 
 
 static const char *screen_names[] = { "Main" };
-static const char *object_names[] = { "main", "home_tab", "obj0", "current_text", "max_text", "setting_tab" };
+static const char *object_names[] = { "main", "obj0", "home_tab", "obj1", "current_text", "max_text", "setting_tab" };
 
 
 typedef void (*tick_screen_func_t)();

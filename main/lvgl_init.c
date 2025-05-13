@@ -133,7 +133,7 @@ void lvgl_port_task(void *arg)
     }
 }
 
-void log_cb(lv_log_level_t level, const char *buf)
+void esp_log_cb(lv_log_level_t level, const char *buf)
 {
     switch (level)
     {
@@ -152,6 +152,7 @@ void log_cb(lv_log_level_t level, const char *buf)
     case LV_LOG_LEVEL_USER:
     case LV_LOG_LEVEL_NONE:
         ESP_LOGI(LVGL_LOG_TAG, "%s", buf);
+        break;
     default:
         break;
     }
@@ -246,7 +247,7 @@ lv_display_t *lvgl_init()
     };
     /* Register done callback */
     ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(lcd_io_handle, &cbs, display));
-    lv_log_register_print_cb(log_cb);
+    // lv_log_register_print_cb(esp_log_cb);
 
 #pragma endregion
 

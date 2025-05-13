@@ -115,5 +115,5 @@ direct_dependencies:
 - generated_ui
 - lvgl/lvgl
 manifest_hash: 53b7c8a8c83cbdef943f4552e327ceec2662b27620a6daedd9a2c08dd2675bba
-target: esp32h2
+target: esp32s3
 version: 2.0.0

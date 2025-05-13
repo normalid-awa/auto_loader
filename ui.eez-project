@@ -15,6 +15,7 @@
       "displayHeight": 240,
       "circularDisplay": false,
       "displayBorderRadius": 0,
+      "darkTheme": false,
       "colorFormat": "BGR",
       "targetPlatform": "",
       "resourceFiles": [],
@@ -113,7 +114,7 @@
         "type": "integer",
         "defaultValue": "0",
         "persistent": false,
-        "native": true
+        "native": false
       },
       {
         "objID": "a99a0bbc-8daf-4dd1-b5d1-efdeb2afd49c",
@@ -121,13 +122,23 @@
         "type": "integer",
         "defaultValue": "0",
         "persistent": false,
-        "native": true
+        "native": false
       }
     ],
     "structures": [],
     "enums": []
   },
-  "actions": [],
+  "actions": [
+    {
+      "objID": "2ff701a4-5d9d-4110-ca4a-375b78c2d309",
+      "components": [],
+      "connectionLines": [],
+      "localVariables": [],
+      "userProperties": [],
+      "name": "button_matrix_clicked",
+      "implementationType": "native"
+    }
+  ],
   "userPages": [
     {
       "objID": "4b40eba7-b31a-468a-b887-11dfd0b6637f",
@@ -148,7 +159,15 @@
             "childStyles": []
           },
           "timeline": [],
-          "eventHandlers": [],
+          "eventHandlers": [
+            {
+              "objID": "edbcf516-79b1-40fa-8a31-1646fcd33522",
+              "eventName": "CLICKED",
+              "handlerType": "action",
+              "action": "button_matrix_clicked",
+              "userData": 0
+            }
+          ],
           "leftUnit": "px",
           "topUnit": "px",
           "widthUnit": "px",
@@ -510,13 +529,22 @@
                           },
                           "hiddenInEditor": false,
                           "timeline": [],
-                          "eventHandlers": [],
+                          "eventHandlers": [
+                            {
+                              "objID": "970041e6-41fb-4803-f763-981803397bb8",
+                              "eventName": "CLICKED",
+                              "handlerType": "action",
+                              "action": "button_matrix_clicked",
+                              "userData": 0
+                            }
+                          ],
                           "leftUnit": "px",
                           "topUnit": "px",
                           "widthUnit": "px",
                           "heightUnit": "%",
                           "children": [],
                           "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+                          "hiddenFlag": false,
                           "hiddenFlagType": "literal",
                           "clickableFlag": true,
                           "clickableFlagType": "literal",
@@ -543,7 +571,10 @@
                               "objID": "46553cc8-8e28-46e2-8a79-a65b5ad02c60",
                               "newLine": false,
                               "text": "+",
-                              "width": 1
+                              "width": 1,
+                              "ctrlCheckable": false,
+                              "ctrlChecked": false,
+                              "ctrlClickTrig": false
                             },
                             {
                               "objID": "890a9a4f-17da-4c47-bc23-bdf090011017",
