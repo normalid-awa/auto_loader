@@ -122,6 +122,11 @@ void lvgl_port_task(void *arg)
     ESP_LOGI(LVGL_TASK_TAG, "Starting LVGL task");
     uint32_t time_till_next_ms = 0;
     uint32_t time_threshold_ms = 1000 / CONFIG_FREERTOS_HZ;
+
+    TickType_t xLastWakeTime;
+    const TickType_t xDelay = pdMS_TO_TICKS(LVGL_TICK_PERIOD_MS);
+    xLastWakeTime = xTaskGetTickCount();
+
     while (1)
     {
         _lock_acquire(&lvgl_api_lock);
@@ -129,7 +134,8 @@ void lvgl_port_task(void *arg)
         _lock_release(&lvgl_api_lock);
         // in case of triggering a task watch dog time out
         time_till_next_ms = MAX(time_till_next_ms, time_threshold_ms);
-        usleep(1000 * time_till_next_ms);
+        // vTaskDelay(pdMS_TO_TICKS(time_till_next_ms));
+        vTaskDelayUntil(&xLastWakeTime, xDelay);
     }
 }
 
@@ -218,9 +224,9 @@ lv_display_t *lvgl_init()
     // alloc draw buffers used by LVGL
     // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
     size_t draw_buffer_sz = LCD_H_RES * LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
-    void *buf1 = spi_bus_dma_memory_alloc(LCD_HOST, draw_buffer_sz, 0);
+    void *buf1 = heap_caps_calloc(1, draw_buffer_sz, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
     assert(buf1);
-    void *buf2 = spi_bus_dma_memory_alloc(LCD_HOST, draw_buffer_sz, 0);
+    void *buf2 = heap_caps_calloc(1, draw_buffer_sz, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
     assert(buf2);
     lv_display_t *display = lv_display_create(LCD_H_RES, LCD_V_RES);
     // initialize LVGL draw buffers
