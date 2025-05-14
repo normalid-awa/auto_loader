@@ -20,6 +20,7 @@
 #include "esp_lcd_touch_cst816s.h"
 
 #include "lvgl_init.h"
+#include "ui.h"
 
 #pragma region LVGL
 
@@ -120,9 +121,6 @@ static void increase_lvgl_tick(void *arg)
 void lvgl_port_task(void *arg)
 {
     ESP_LOGI(LVGL_TASK_TAG, "Starting LVGL task");
-    uint32_t time_till_next_ms = 0;
-    uint32_t time_threshold_ms = 1000 / CONFIG_FREERTOS_HZ;
-
     TickType_t xLastWakeTime;
     const TickType_t xDelay = pdMS_TO_TICKS(LVGL_TICK_PERIOD_MS);
     xLastWakeTime = xTaskGetTickCount();
@@ -130,11 +128,9 @@ void lvgl_port_task(void *arg)
     while (1)
     {
         _lock_acquire(&lvgl_api_lock);
-        time_till_next_ms = lv_timer_handler();
+        lv_timer_handler();
+        ui_tick();
         _lock_release(&lvgl_api_lock);
-        // in case of triggering a task watch dog time out
-        time_till_next_ms = MAX(time_till_next_ms, time_threshold_ms);
-        // vTaskDelay(pdMS_TO_TICKS(time_till_next_ms));
         vTaskDelayUntil(&xLastWakeTime, xDelay);
     }
 }
