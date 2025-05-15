@@ -112,7 +112,7 @@ static void lvgl_touch_cb(lv_indev_t *indev, lv_indev_data_t *data)
     }
 }
 
-static void increase_lvgl_tick(void *arg)
+void IRAM_ATTR increase_lvgl_tick(void *arg)
 {
     /* Tell LVGL how many milliseconds has elapsed */
     lv_tick_inc(LVGL_TICK_PERIOD_MS);
@@ -120,18 +120,15 @@ static void increase_lvgl_tick(void *arg)
 
 void lvgl_port_task(void *arg)
 {
-    ESP_LOGI(LVGL_TASK_TAG, "Starting LVGL task");
-    TickType_t xLastWakeTime;
-    const TickType_t xDelay = pdMS_TO_TICKS(LVGL_TICK_PERIOD_MS);
-    xLastWakeTime = xTaskGetTickCount();
+    uint32_t next_milis;
 
     while (1)
     {
-        _lock_acquire(&lvgl_api_lock);
-        lv_timer_handler();
+        next_milis = lv_timer_handler();
+        lv_lock();
         ui_tick();
-        _lock_release(&lvgl_api_lock);
-        vTaskDelayUntil(&xLastWakeTime, xDelay);
+        lv_unlock();
+        vTaskDelay(pdMS_TO_TICKS(next_milis));
     }
 }
 
@@ -162,6 +159,41 @@ void esp_log_cb(lv_log_level_t level, const char *buf)
 
 lv_display_t *lvgl_init()
 {
+
+#pragma region LVGL_INIT
+
+    ESP_LOGI(LVGL_TASK_TAG, "Initialize LVGL library");
+    lv_init();
+    // alloc draw buffers used by LVGL
+    // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
+    size_t draw_buffer_sz = LCD_H_RES * LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
+    void *buf1 = heap_caps_calloc(1, draw_buffer_sz, MALLOC_CAP_DMA);
+    assert(buf1);
+    void *buf2 = heap_caps_calloc(1, draw_buffer_sz, MALLOC_CAP_DMA);
+    assert(buf2);
+    lv_display_t *display = lv_display_create(LCD_H_RES, LCD_V_RES);
+    // initialize LVGL draw buffers
+    lv_display_set_buffers(display, buf1, buf2, draw_buffer_sz, LV_DISPLAY_RENDER_MODE_PARTIAL);
+    // set color depth
+    lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
+    // set the callback which can copy the rendered image to an area of the display
+    lv_display_set_flush_cb(display, lvgl_flush_cb);
+
+    ESP_LOGI(LVGL_TASK_TAG, "Install LVGL tick timer");
+    // Tick interface for LVGL (using esp_timer to generate 2ms periodic event)
+    const esp_timer_create_args_t lvgl_tick_timer_args = {
+        .callback = &increase_lvgl_tick,
+        .name = "lvgl_tick"};
+    esp_timer_handle_t lvgl_tick_timer = NULL;
+    ESP_ERROR_CHECK(esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer));
+    ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, LVGL_TICK_PERIOD_MS * 1000));
+
+    ESP_LOGI(LVGL_TASK_TAG, "Register io panel event callback for LVGL flush ready notification");
+    const esp_lcd_panel_io_callbacks_t cbs = {
+        .on_color_trans_done = notify_lvgl_flush_ready,
+    };
+
+#pragma endregion
 
 #pragma region LCD_INIT
 
@@ -211,46 +243,10 @@ lv_display_t *lvgl_init()
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(lcd_handle, true));
     gpio_set_level(PIN_NUM_LCD_BK_LIGHT, LCD_BK_LIGHT_ON_LEVEL);
 
-#pragma endregion
-
-#pragma region LVGL_INIT
-
-    ESP_LOGI(LVGL_TASK_TAG, "Initialize LVGL library");
-    lv_init();
-    // alloc draw buffers used by LVGL
-    // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
-    size_t draw_buffer_sz = LCD_H_RES * LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
-    void *buf1 = heap_caps_calloc(1, draw_buffer_sz, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
-    assert(buf1);
-    void *buf2 = heap_caps_calloc(1, draw_buffer_sz, MALLOC_CAP_INTERNAL | MALLOC_CAP_DMA);
-    assert(buf2);
-    lv_display_t *display = lv_display_create(LCD_H_RES, LCD_V_RES);
-    // initialize LVGL draw buffers
-    lv_display_set_buffers(display, buf1, buf2, draw_buffer_sz, LV_DISPLAY_RENDER_MODE_PARTIAL);
-    // associate the mipi panel handle to the display
-    lv_display_set_user_data(display, lcd_handle);
-    // set color depth
-    lv_display_set_color_format(display, LV_COLOR_FORMAT_RGB565);
-    // set the callback which can copy the rendered image to an area of the display
-    lv_display_set_flush_cb(display, lvgl_flush_cb);
-
-    ESP_LOGI(LVGL_TASK_TAG, "Install LVGL tick timer");
-    // Tick interface for LVGL (using esp_timer to generate 2ms periodic event)
-    const esp_timer_create_args_t lvgl_tick_timer_args = {
-        .callback = &increase_lvgl_tick,
-        .name = "lvgl_tick"};
-    esp_timer_handle_t lvgl_tick_timer = NULL;
-    ESP_ERROR_CHECK(esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer));
-    ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, LVGL_TICK_PERIOD_MS * 1000));
-
-    ESP_LOGI(LVGL_TASK_TAG, "Register io panel event callback for LVGL flush ready notification");
-    const esp_lcd_panel_io_callbacks_t cbs = {
-        .on_color_trans_done = notify_lvgl_flush_ready,
-    };
     /* Register done callback */
     ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(lcd_io_handle, &cbs, display));
-    // lv_log_register_print_cb(esp_log_cb);
 
+    lv_display_set_user_data(display, lcd_handle);
 #pragma endregion
 
 #pragma region TOUCH_INIT
@@ -305,6 +301,7 @@ lv_display_t *lvgl_init()
 
 #pragma endregion
 
+    lv_log_register_print_cb(esp_log_cb);
     return display;
 }
 

@@ -32,15 +32,12 @@
 #define LCD_CMD_BITS 8
 #define LCD_PARAM_BITS 8
 
-#define LVGL_DRAW_BUF_LINES 140 // number of display lines in each draw buffer
+#define LVGL_DRAW_BUF_LINES 40 // number of display lines in each draw buffer
 #define LVGL_TICK_PERIOD_MS 5
 #define LVGL_TASK_MAX_DELAY_MS 500
 #define LVGL_TASK_MIN_DELAY_MS 1
-#define LVGL_TASK_STACK_SIZE (10 * 1024)
+#define LVGL_TASK_STACK_SIZE (16 * 1024)
 #define LVGL_TASK_PRIORITY 2
-
-// LVGL library is not thread-safe, this example will call LVGL APIs from different tasks, so use a mutex to protect it
-static _lock_t lvgl_api_lock;
 
 void lvgl_port_task(void *arg);
 lv_display_t *lvgl_init();

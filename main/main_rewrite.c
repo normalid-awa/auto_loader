@@ -18,9 +18,9 @@ void app_main()
     ESP_LOGI("LVGL_TASK_TAG", "Create LVGL task");
     xTaskCreate(lvgl_port_task, "LVGL", LVGL_TASK_STACK_SIZE, NULL, LVGL_TASK_PRIORITY, NULL);
     // Lock the mutex due to the LVGL APIs are not thread-safe
-    _lock_acquire(&lvgl_api_lock);
+    lv_lock();
     lv_disp_set_rotation(display, LV_DISPLAY_ROTATION_90);
     ui_init();
     create_screens();
-    _lock_release(&lvgl_api_lock);
+    lv_unlock();
 }
