@@ -157,6 +157,11 @@ void esp_log_cb(lv_log_level_t level, const char *buf)
     }
 }
 
+uint32_t lv_tick_get_cb()
+{
+    return esp_timer_get_time() / 1000;
+}
+
 lv_display_t *lvgl_init()
 {
 
@@ -164,6 +169,7 @@ lv_display_t *lvgl_init()
 
     ESP_LOGI(LVGL_TASK_TAG, "Initialize LVGL library");
     lv_init();
+    lv_tick_set_cb(lv_tick_get_cb);
     // alloc draw buffers used by LVGL
     // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
     size_t draw_buffer_sz = LCD_H_RES * LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
