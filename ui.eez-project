@@ -112,7 +112,7 @@
         "objID": "f8848877-65e1-4887-bef9-a40bc2900b1b",
         "name": "max",
         "type": "integer",
-        "defaultValue": "1",
+        "defaultValue": "-1",
         "persistent": false,
         "native": false
       },
@@ -120,7 +120,7 @@
         "objID": "a99a0bbc-8daf-4dd1-b5d1-efdeb2afd49c",
         "name": "current",
         "type": "integer",
-        "defaultValue": "0",
+        "defaultValue": "1",
         "persistent": false,
         "native": false
       }
@@ -136,6 +136,15 @@
       "localVariables": [],
       "userProperties": [],
       "name": "button_matrix_clicked",
+      "implementationType": "native"
+    },
+    {
+      "objID": "2a13d9e6-49c1-4921-fec7-ee050329136a",
+      "components": [],
+      "connectionLines": [],
+      "localVariables": [],
+      "userProperties": [],
+      "name": "button_matrix_pressing",
       "implementationType": "native"
     }
   ],
@@ -307,6 +316,11 @@
                                     "DEFAULT": {
                                       "align": "CENTER"
                                     }
+                                  },
+                                  "INDICATOR": {
+                                    "DEFAULT": {
+                                      "arc_color": "#fe2962"
+                                    }
                                   }
                                 }
                               },
@@ -473,7 +487,7 @@
                               },
                               "group": "",
                               "groupIndex": 0,
-                              "text": "max",
+                              "text": "max == -1 ? `INF` : max",
                               "textType": "expression",
                               "longMode": "WRAP",
                               "recolor": false,
@@ -530,6 +544,13 @@
                           "hiddenInEditor": false,
                           "timeline": [],
                           "eventHandlers": [
+                            {
+                              "objID": "e276c728-636f-4276-9072-d2c2585df82b",
+                              "eventName": "LONG_PRESSED_REPEAT",
+                              "handlerType": "action",
+                              "action": "button_matrix_pressing",
+                              "userData": 0
+                            },
                             {
                               "objID": "970041e6-41fb-4803-f763-981803397bb8",
                               "eventName": "CLICKED",

@@ -20,13 +20,13 @@ extern "C" void action_button_matrix_clicked(lv_event_t *e)
         value += 1;
         break;
     case 1:
-        value -= 1;
+        if (value > 0)
+            value -= 1;
         break;
     case 2:
-        value = INT32_MAX;
+        value = -1;
         break;
     };
 
-    LV_LOG_WARN("New value: %d", value);
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_MAX, IntegerValue(value));
 }
