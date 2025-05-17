@@ -120,7 +120,7 @@
         "objID": "a99a0bbc-8daf-4dd1-b5d1-efdeb2afd49c",
         "name": "current",
         "type": "integer",
-        "defaultValue": "1",
+        "defaultValue": "0",
         "persistent": false,
         "native": false
       }
