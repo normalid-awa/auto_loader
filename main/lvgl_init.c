@@ -21,6 +21,7 @@
 
 #include "lvgl_init.h"
 #include "ui.h"
+#include "screens.h"
 
 #pragma region LVGL
 
@@ -124,8 +125,8 @@ void lvgl_port_task(void *arg)
 
     while (1)
     {
-        next_milis = lv_timer_handler();
         lv_lock();
+        next_milis = lv_task_handler();
         ui_tick();
         lv_unlock();
         vTaskDelay(pdMS_TO_TICKS(next_milis));
@@ -157,11 +158,6 @@ void esp_log_cb(lv_log_level_t level, const char *buf)
     }
 }
 
-uint32_t lv_tick_get_cb()
-{
-    return esp_timer_get_time() / 1000;
-}
-
 lv_display_t *lvgl_init()
 {
 
@@ -169,7 +165,6 @@ lv_display_t *lvgl_init()
 
     ESP_LOGI(LVGL_TASK_TAG, "Initialize LVGL library");
     lv_init();
-    lv_tick_set_cb(lv_tick_get_cb);
     // alloc draw buffers used by LVGL
     // it's recommended to choose the size of the draw buffer(s) to be at least 1/10 screen sized
     size_t draw_buffer_sz = LCD_H_RES * LVGL_DRAW_BUF_LINES * sizeof(lv_color16_t);
@@ -189,7 +184,8 @@ lv_display_t *lvgl_init()
     // Tick interface for LVGL (using esp_timer to generate 2ms periodic event)
     const esp_timer_create_args_t lvgl_tick_timer_args = {
         .callback = &increase_lvgl_tick,
-        .name = "lvgl_tick"};
+        .name = "lvgl_tick",
+    };
     esp_timer_handle_t lvgl_tick_timer = NULL;
     ESP_ERROR_CHECK(esp_timer_create(&lvgl_tick_timer_args, &lvgl_tick_timer));
     ESP_ERROR_CHECK(esp_timer_start_periodic(lvgl_tick_timer, LVGL_TICK_PERIOD_MS * 1000));

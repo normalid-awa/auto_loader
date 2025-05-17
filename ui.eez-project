@@ -112,7 +112,7 @@
         "objID": "f8848877-65e1-4887-bef9-a40bc2900b1b",
         "name": "max",
         "type": "integer",
-        "defaultValue": "10",
+        "defaultValue": "1",
         "persistent": false,
         "native": false
       },

@@ -133,6 +133,7 @@
 		"stdint.h": "c",
 		"lvgl_init.h": "c",
 		"stdbool.h": "c",
-		"structs.h": "c"
+		"structs.h": "c",
+		"lv_area_private.h": "c"
 	}
 }

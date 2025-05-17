@@ -13,51 +13,43 @@
 objects_t objects;
 lv_obj_t *tick_value_change_obj;
 
-static void event_handler_cb_main_main(lv_event_t *e)
-{
+static void event_handler_cb_main_main(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
-
-    if (event == LV_EVENT_CLICKED)
-    {
+    
+    if (event == LV_EVENT_CLICKED) {
         e->user_data = (void *)0;
         action_button_matrix_clicked(e);
     }
 }
 
-static void event_handler_cb_main_obj1(lv_event_t *e)
-{
+static void event_handler_cb_main_obj1(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
-
-    if (event == LV_EVENT_VALUE_CHANGED)
-    {
+    
+    if (event == LV_EVENT_VALUE_CHANGED) {
         lv_obj_t *ta = lv_event_get_target(e);
-        if (tick_value_change_obj != ta)
-        {
+        if (tick_value_change_obj != ta) {
             int32_t value = lv_arc_get_value(ta);
             assignIntegerProperty(flowState, 5, 4, value, "Failed to assign Value in Arc widget");
         }
     }
 }
 
-static void event_handler_cb_main_obj0(lv_event_t *e)
-{
+static void event_handler_cb_main_obj0(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
-
-    if (event == LV_EVENT_CLICKED)
-    {
+    
+    if (event == LV_EVENT_CLICKED) {
         e->user_data = (void *)0;
         action_button_matrix_clicked(e);
     }
 }
 
-void create_screen_main()
-{
+void create_screen_main() {
     void *flowState = getFlowState(0, 0);
     (void)flowState;
     lv_obj_t *obj = lv_obj_create(0);
@@ -191,24 +183,21 @@ void create_screen_main()
             }
         }
     }
-
+    
     tick_screen_main();
 }
 
-void tick_screen_main()
-{
+void tick_screen_main() {
     void *flowState = getFlowState(0, 0);
     (void)flowState;
     {
         int32_t new_val = evalIntegerProperty(flowState, 5, 3, "Failed to evaluate Range max in Arc widget");
         int32_t cur_val = lv_arc_get_max_value(objects.obj1);
-        if (new_val != cur_val)
-        {
+        if (new_val != cur_val) {
             tick_value_change_obj = objects.obj1;
             int16_t min = lv_arc_get_min_value(objects.obj1);
             int16_t max = new_val;
-            if (min < max)
-            {
+            if (min < max) {
                 lv_arc_set_range(objects.obj1, min, max);
             }
             tick_value_change_obj = NULL;
@@ -217,8 +206,7 @@ void tick_screen_main()
     {
         int32_t new_val = evalIntegerProperty(flowState, 5, 4, "Failed to evaluate Value in Arc widget");
         int32_t cur_val = lv_arc_get_value(objects.obj1);
-        if (new_val != cur_val)
-        {
+        if (new_val != cur_val) {
             tick_value_change_obj = objects.obj1;
             lv_arc_set_value(objects.obj1, new_val);
             tick_value_change_obj = NULL;
@@ -227,8 +215,7 @@ void tick_screen_main()
     {
         const char *new_val = evalTextProperty(flowState, 6, 3, "Failed to evaluate Text in Label widget");
         const char *cur_val = lv_label_get_text(objects.current_text);
-        if (strcmp(new_val, cur_val) != 0)
-        {
+        if (strcmp(new_val, cur_val) != 0) {
             tick_value_change_obj = objects.current_text;
             lv_label_set_text(objects.current_text, new_val);
             tick_value_change_obj = NULL;
@@ -237,8 +224,7 @@ void tick_screen_main()
     {
         const char *new_val = evalTextProperty(flowState, 8, 3, "Failed to evaluate Text in Label widget");
         const char *cur_val = lv_label_get_text(objects.max_text);
-        if (strcmp(new_val, cur_val) != 0)
-        {
+        if (strcmp(new_val, cur_val) != 0) {
             tick_value_change_obj = objects.max_text;
             lv_label_set_text(objects.max_text, new_val);
             tick_value_change_obj = NULL;
@@ -246,30 +232,29 @@ void tick_screen_main()
     }
 }
 
-static const char *screen_names[] = {"Main"};
-static const char *object_names[] = {"main", "obj0", "home_tab", "obj1", "current_text", "max_text", "setting_tab"};
+
+static const char *screen_names[] = { "Main" };
+static const char *object_names[] = { "main", "obj0", "home_tab", "obj1", "current_text", "max_text", "setting_tab" };
+
 
 typedef void (*tick_screen_func_t)();
 tick_screen_func_t tick_screen_funcs[] = {
     tick_screen_main,
 };
-void tick_screen(int screen_index)
-{
+void tick_screen(int screen_index) {
     tick_screen_funcs[screen_index]();
 }
-void tick_screen_by_id(enum ScreensEnum screenId)
-{
+void tick_screen_by_id(enum ScreensEnum screenId) {
     tick_screen_funcs[screenId - 1]();
 }
 
-void create_screens()
-{
+void create_screens() {
     eez_flow_init_screen_names(screen_names, sizeof(screen_names) / sizeof(const char *));
     eez_flow_init_object_names(object_names, sizeof(object_names) / sizeof(const char *));
-
+    
     lv_disp_t *dispp = lv_disp_get_default();
     lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), false, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
-
+    
     create_screen_main();
 }
