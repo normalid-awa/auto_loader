@@ -43,6 +43,10 @@ static void event_handler_cb_main_obj0(lv_event_t *e) {
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
     
+    if (event == LV_EVENT_LONG_PRESSED_REPEAT) {
+        e->user_data = (void *)0;
+        action_button_matrix_long_pressed(e);
+    }
     if (event == LV_EVENT_CLICKED) {
         e->user_data = (void *)0;
         action_button_matrix_clicked(e);
@@ -117,6 +121,7 @@ void create_screen_main() {
                                             lv_obj_add_event_cb(obj, event_handler_cb_main_obj1, LV_EVENT_ALL, flowState);
                                             lv_obj_set_style_opa(obj, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
                                             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_arc_color(obj, lv_color_hex(0xfffe2962), LV_PART_INDICATOR | LV_STATE_DEFAULT);
                                         }
                                         {
                                             // current text

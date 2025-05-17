@@ -144,7 +144,7 @@
       "connectionLines": [],
       "localVariables": [],
       "userProperties": [],
-      "name": "button_matrix_pressing",
+      "name": "button_matrix_long_pressed",
       "implementationType": "native"
     }
   ],
@@ -548,7 +548,7 @@
                               "objID": "e276c728-636f-4276-9072-d2c2585df82b",
                               "eventName": "LONG_PRESSED_REPEAT",
                               "handlerType": "action",
-                              "action": "button_matrix_pressing",
+                              "action": "button_matrix_long_pressed",
                               "userData": 0
                             },
                             {
@@ -606,7 +606,12 @@
                             {
                               "objID": "6488962c-f6a2-4c43-c717-fd54055febe0",
                               "text": "-",
-                              "width": 1
+                              "width": 1,
+                              "ctrlDisabled": false,
+                              "ctrlChecked": false,
+                              "ctrlClickTrig": false,
+                              "ctrlPopover": false,
+                              "ctrlCustom1": false
                             },
                             {
                               "objID": "6b2238c2-32d1-4a10-fd7e-23e8ab81ce08",

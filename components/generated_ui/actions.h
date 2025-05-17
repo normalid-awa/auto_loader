@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 extern void action_button_matrix_clicked(lv_event_t * e);
+extern void action_button_matrix_long_pressed(lv_event_t * e);
 
 
 #ifdef __cplusplus
