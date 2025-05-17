@@ -11,8 +11,15 @@
 #include "screens.h"
 #include "ui.h"
 
+static void lvgl_tick()
+{
+    ui_tick();
+}
+
 void app_main()
 {
+    void (*ptr)() = &lvgl_tick;
+    lvgl_tick_callback = ptr;
     lv_display_t *display = lvgl_init();
     lv_disp_set_default(display);
     ESP_LOGI("LVGL_TASK_TAG", "Create LVGL task");
@@ -23,4 +30,5 @@ void app_main()
     lv_disp_set_rotation(display, LV_DISPLAY_ROTATION_90);
     ui_init();
     lv_unlock();
+    set_brightness(255);
 }

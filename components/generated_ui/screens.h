@@ -10,8 +10,10 @@ extern "C" {
 typedef struct _objects_t {
     lv_obj_t *main;
     lv_obj_t *obj0;
-    lv_obj_t *home_tab;
     lv_obj_t *obj1;
+    lv_obj_t *obj2;
+    lv_obj_t *home_tab;
+    lv_obj_t *obj3;
     lv_obj_t *current_text;
     lv_obj_t *max_text;
     lv_obj_t *setting_tab;

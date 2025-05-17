@@ -134,6 +134,8 @@
 		"lvgl_init.h": "c",
 		"stdbool.h": "c",
 		"structs.h": "c",
-		"lv_area_private.h": "c"
+		"lv_area_private.h": "c",
+		"ledc.h": "c",
+		"valarray": "cpp"
 	}
 }

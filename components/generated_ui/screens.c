@@ -24,7 +24,7 @@ static void event_handler_cb_main_main(lv_event_t *e) {
     }
 }
 
-static void event_handler_cb_main_obj1(lv_event_t *e) {
+static void event_handler_cb_main_obj3(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
@@ -53,6 +53,44 @@ static void event_handler_cb_main_obj0(lv_event_t *e) {
     }
 }
 
+static void event_handler_cb_main_obj1(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    (void)flowState;
+    
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            bool value = lv_obj_has_state(ta, LV_STATE_CHECKED);
+            assignBooleanProperty(flowState, 14, 3, value, "Failed to assign Checked state");
+        }
+    }
+    
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        e->user_data = (void *)0;
+        action_toggle_dark_mode(e);
+    }
+}
+
+static void event_handler_cb_main_obj2(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    (void)flowState;
+    
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            int32_t value = lv_slider_get_value(ta);
+            assignIntegerProperty(flowState, 17, 3, value, "Failed to assign Value in Slider widget");
+        }
+    }
+    
+    if (event == LV_EVENT_VALUE_CHANGED) {
+        e->user_data = (void *)0;
+        action_brightness_changed(e);
+    }
+}
+
 void create_screen_main() {
     void *flowState = getFlowState(0, 0);
     (void)flowState;
@@ -75,10 +113,6 @@ void create_screen_main() {
                     // Home tab
                     lv_obj_t *obj = lv_tabview_add_tab(parent_obj, "Home");
                     objects.home_tab = obj;
-                    lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-                    lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
                     {
                         lv_obj_t *parent_obj = obj;
                         {
@@ -114,14 +148,15 @@ void create_screen_main() {
                                         lv_obj_t *parent_obj = obj;
                                         {
                                             lv_obj_t *obj = lv_arc_create(parent_obj);
-                                            objects.obj1 = obj;
+                                            objects.obj3 = obj;
                                             lv_obj_set_pos(obj, 0, 0);
                                             lv_obj_set_size(obj, 150, 150);
                                             lv_arc_set_range(obj, 0, 100);
-                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj1, LV_EVENT_ALL, flowState);
+                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj3, LV_EVENT_ALL, flowState);
+                                            lv_obj_add_state(obj, LV_STATE_DISABLED);
                                             lv_obj_set_style_opa(obj, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
                                             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-                                            lv_obj_set_style_arc_color(obj, lv_color_hex(0xfffe2962), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_arc_color(obj, lv_color_hex(0xfff9215b), LV_PART_INDICATOR | LV_STATE_DEFAULT);
                                         }
                                         {
                                             // current text
@@ -181,6 +216,82 @@ void create_screen_main() {
                     // Setting tab
                     lv_obj_t *obj = lv_tabview_add_tab(parent_obj, "Setting");
                     objects.setting_tab = obj;
+                    {
+                        lv_obj_t *parent_obj = obj;
+                        {
+                            lv_obj_t *obj = lv_list_create(parent_obj);
+                            lv_obj_set_pos(obj, 0, 0);
+                            lv_obj_set_size(obj, LV_PCT(100), LV_PCT(100));
+                            lv_obj_set_style_pad_top(obj, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_pad_left(obj, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            lv_obj_set_style_pad_right(obj, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+                            {
+                                lv_obj_t *parent_obj = obj;
+                                {
+                                    lv_obj_t *obj = lv_obj_create(parent_obj);
+                                    lv_obj_set_pos(obj, 0, 0);
+                                    lv_obj_set_size(obj, LV_PCT(100), 40);
+                                    lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_right(obj, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_left(obj, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_radius(obj, 7, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    {
+                                        lv_obj_t *parent_obj = obj;
+                                        {
+                                            lv_obj_t *obj = lv_label_create(parent_obj);
+                                            lv_obj_set_pos(obj, 0, 0);
+                                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                                            lv_obj_set_style_align(obj, LV_ALIGN_LEFT_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_label_set_text(obj, "Dark Mode");
+                                        }
+                                        {
+                                            lv_obj_t *obj = lv_switch_create(parent_obj);
+                                            objects.obj1 = obj;
+                                            lv_obj_set_pos(obj, 0, 0);
+                                            lv_obj_set_size(obj, 50, 25);
+                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj1, LV_EVENT_ALL, flowState);
+                                            lv_obj_set_style_align(obj, LV_ALIGN_RIGHT_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                        }
+                                    }
+                                }
+                                {
+                                    lv_obj_t *obj = lv_obj_create(parent_obj);
+                                    lv_obj_set_pos(obj, 0, 0);
+                                    lv_obj_set_size(obj, LV_PCT(100), 40);
+                                    lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_right(obj, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_left(obj, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_radius(obj, 7, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    {
+                                        lv_obj_t *parent_obj = obj;
+                                        {
+                                            lv_obj_t *obj = lv_label_create(parent_obj);
+                                            lv_obj_set_pos(obj, 0, 0);
+                                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                                            lv_obj_set_style_align(obj, LV_ALIGN_LEFT_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_label_set_text(obj, "Brightness");
+                                        }
+                                        {
+                                            lv_obj_t *obj = lv_slider_create(parent_obj);
+                                            objects.obj2 = obj;
+                                            lv_obj_set_pos(obj, 0, 0);
+                                            lv_obj_set_size(obj, LV_PCT(50), 10);
+                                            lv_slider_set_range(obj, 0, 255);
+                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj2, LV_EVENT_ALL, flowState);
+                                            lv_obj_set_style_align(obj, LV_ALIGN_RIGHT_MID, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -194,23 +305,23 @@ void tick_screen_main() {
     (void)flowState;
     {
         int32_t new_val = evalIntegerProperty(flowState, 5, 3, "Failed to evaluate Range max in Arc widget");
-        int32_t cur_val = lv_arc_get_max_value(objects.obj1);
+        int32_t cur_val = lv_arc_get_max_value(objects.obj3);
         if (new_val != cur_val) {
-            tick_value_change_obj = objects.obj1;
-            int16_t min = lv_arc_get_min_value(objects.obj1);
+            tick_value_change_obj = objects.obj3;
+            int16_t min = lv_arc_get_min_value(objects.obj3);
             int16_t max = new_val;
             if (min < max) {
-                lv_arc_set_range(objects.obj1, min, max);
+                lv_arc_set_range(objects.obj3, min, max);
             }
             tick_value_change_obj = NULL;
         }
     }
     {
         int32_t new_val = evalIntegerProperty(flowState, 5, 4, "Failed to evaluate Value in Arc widget");
-        int32_t cur_val = lv_arc_get_value(objects.obj1);
+        int32_t cur_val = lv_arc_get_value(objects.obj3);
         if (new_val != cur_val) {
-            tick_value_change_obj = objects.obj1;
-            lv_arc_set_value(objects.obj1, new_val);
+            tick_value_change_obj = objects.obj3;
+            lv_arc_set_value(objects.obj3, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -232,11 +343,30 @@ void tick_screen_main() {
             tick_value_change_obj = NULL;
         }
     }
+    {
+        bool new_val = evalBooleanProperty(flowState, 14, 3, "Failed to evaluate Checked state");
+        bool cur_val = lv_obj_has_state(objects.obj1, LV_STATE_CHECKED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.obj1;
+            if (new_val) lv_obj_add_state(objects.obj1, LV_STATE_CHECKED);
+            else lv_obj_clear_state(objects.obj1, LV_STATE_CHECKED);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        int32_t new_val = evalIntegerProperty(flowState, 17, 3, "Failed to evaluate Value in Slider widget");
+        int32_t cur_val = lv_slider_get_value(objects.obj2);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.obj2;
+            lv_slider_set_value(objects.obj2, new_val, LV_ANIM_OFF);
+            tick_value_change_obj = NULL;
+        }
+    }
 }
 
 
 static const char *screen_names[] = { "Main" };
-static const char *object_names[] = { "main", "obj0", "home_tab", "obj1", "current_text", "max_text", "setting_tab" };
+static const char *object_names[] = { "main", "obj0", "obj1", "obj2", "home_tab", "obj3", "current_text", "max_text", "setting_tab" };
 
 
 typedef void (*tick_screen_func_t)();
@@ -255,7 +385,7 @@ void create_screens() {
     eez_flow_init_object_names(object_names, sizeof(object_names) / sizeof(const char *));
     
     lv_disp_t *dispp = lv_disp_get_default();
-    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), false, LV_FONT_DEFAULT);
+    lv_theme_t *theme = lv_theme_default_init(dispp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), true, LV_FONT_DEFAULT);
     lv_disp_set_theme(dispp, theme);
     
     create_screen_main();

@@ -16,6 +16,10 @@
 #define PIN_NUM_LCD_CS GPIO_NUM_18
 #define PIN_NUM_LCD_DC GPIO_NUM_8
 #define PIN_NUM_LCD_BK_LIGHT GPIO_NUM_3
+#define LCD_LEDC_MODE LEDC_LOW_SPEED_MODE
+#define LCD_LEDC_CHANNEL LEDC_CHANNEL_0
+#define LCD_LEDC_TIMER LEDC_TIMER_0
+#define LCD_BL_PWM_FREQ 5000
 
 #define PIN_NUM_TOUCH_INT GPIO_NUM_4
 #define PIN_NUM_TOUCH_RST GPIO_NUM_5
@@ -41,5 +45,13 @@
 
 void lvgl_port_task(void *arg);
 lv_display_t *lvgl_init();
+
+extern void (*lvgl_tick_callback)();
+
+/**
+ * @brief Set the brightness level of the backlight.
+ * @param level The brightness level, range from 0 to 255.
+ */
+void set_brightness(uint8_t brightness);
 
 #endif // LVGL_INIT_H_

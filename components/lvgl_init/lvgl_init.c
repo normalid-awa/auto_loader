@@ -11,6 +11,7 @@
 #include "driver/i2c_master.h"
 #include "driver/gpio.h"
 #include "driver/spi_master.h"
+#include "driver/ledc.h"
 #include "esp_err.h"
 #include "esp_log.h"
 #include "lvgl.h"
@@ -20,13 +21,11 @@
 #include "esp_lcd_touch_cst816s.h"
 
 #include "lvgl_init.h"
-#include "ui.h"
-#include "screens.h"
 
 #pragma region LVGL
-
 static const char *LVGL_TASK_TAG = "LVGL Task";
 static const char *LVGL_LOG_TAG = "LVGL Log";
+extern void (*lvgl_tick_callback)() = NULL;
 
 static bool notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_io_event_data_t *edata, void *user_ctx)
 {
@@ -127,7 +126,7 @@ void lvgl_port_task(void *arg)
     {
         lv_lock();
         next_milis = lv_task_handler();
-        ui_tick();
+        (*lvgl_tick_callback)();
         lv_unlock();
         vTaskDelay(pdMS_TO_TICKS(next_milis));
     }
@@ -249,6 +248,27 @@ lv_display_t *lvgl_init()
     ESP_ERROR_CHECK(esp_lcd_panel_io_register_event_callbacks(lcd_io_handle, &cbs, display));
 
     lv_display_set_user_data(display, lcd_handle);
+
+    // Prepare and then apply the LEDC PWM timer configuration
+    ledc_timer_config_t ledc_timer = {
+        .speed_mode = LCD_LEDC_MODE,
+        .duty_resolution = LEDC_TIMER_13_BIT,
+        .timer_num = LCD_LEDC_TIMER,
+        .freq_hz = 4000, // Set output frequency at 4 kHz
+        .clk_cfg = LEDC_AUTO_CLK};
+    ESP_ERROR_CHECK(ledc_timer_config(&ledc_timer));
+
+    ledc_channel_config_t lcd_ledc = {
+        .gpio_num = PIN_NUM_LCD_BK_LIGHT,
+        .channel = LCD_LEDC_CHANNEL,
+        .speed_mode = LCD_LEDC_MODE,
+        .timer_sel = LCD_LEDC_TIMER,
+        .intr_type = LEDC_INTR_DISABLE,
+        .duty = 0,
+        .hpoint = 0,
+    };
+    ESP_ERROR_CHECK(ledc_channel_config(&lcd_ledc));
+
 #pragma endregion
 
 #pragma region TOUCH_INIT
@@ -307,4 +327,11 @@ lv_display_t *lvgl_init()
     return display;
 }
 
-#pragma endregion
+void set_brightness(uint8_t brightness)
+{
+    brightness = MAX(brightness, 10);     // minimum brightness is 10%
+    float fbrightness = brightness / 255; // convert to percentage
+    uint32_t duty = MIN((2 << 13) * fbrightness, (2 << 13) - 1);
+    ESP_ERROR_CHECK(ledc_set_duty(LCD_LEDC_MODE, LCD_LEDC_CHANNEL, duty));
+    ESP_ERROR_CHECK(ledc_update_duty(LCD_LEDC_MODE, LCD_LEDC_CHANNEL));
+}
