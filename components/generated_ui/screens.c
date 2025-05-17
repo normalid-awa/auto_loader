@@ -89,7 +89,7 @@ void create_screen_main() {
                                 {
                                     lv_obj_t *obj = lv_obj_create(parent_obj);
                                     lv_obj_set_pos(obj, 0, 16);
-                                    lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_PCT(100));
+                                    lv_obj_set_size(obj, 150, LV_PCT(100));
                                     lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
                                     lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
                                     lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -114,9 +114,6 @@ void create_screen_main() {
                                             lv_obj_set_pos(obj, 0, 0);
                                             lv_obj_set_size(obj, 150, 150);
                                             lv_arc_set_range(obj, 0, 100);
-                                            lv_arc_set_bg_start_angle(obj, 0);
-                                            lv_arc_set_bg_end_angle(obj, 359);
-                                            lv_arc_set_rotation(obj, -90);
                                             lv_obj_add_event_cb(obj, event_handler_cb_main_obj1, LV_EVENT_ALL, flowState);
                                             lv_obj_set_style_opa(obj, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
                                             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);

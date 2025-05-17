@@ -259,7 +259,7 @@
                           "eventHandlers": [],
                           "leftUnit": "px",
                           "topUnit": "px",
-                          "widthUnit": "content",
+                          "widthUnit": "px",
                           "heightUnit": "%",
                           "children": [
                             {
@@ -318,10 +318,10 @@
                               "rangeMaxType": "expression",
                               "value": "current",
                               "valueType": "expression",
-                              "bgStartAngle": 0,
-                              "bgEndAngle": 359,
+                              "bgStartAngle": 135,
+                              "bgEndAngle": 45,
                               "mode": "NORMAL",
-                              "rotation": -90
+                              "rotation": 0
                             },
                             {
                               "objID": "bebb5b41-d0bd-4a13-9b84-be455d57d6fb",
