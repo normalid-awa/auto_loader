@@ -6,8 +6,6 @@
 #include <lvgl.h>
 #include <esp_log.h>
 
-const static char *TAG = "ACTION";
-
 enum ButtonMatrixIds
 {
     INCREAMENT = 0,
