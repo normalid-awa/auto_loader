@@ -15,27 +15,6 @@ enum ButtonMatrixIds
     INFINITE = 2,
 };
 
-void max_value_action(ButtonMatrixIds action)
-{
-    int value = flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_MAX).getInt();
-
-    switch (action)
-    {
-    case INCREAMENT:
-        value += 1;
-        break;
-    case DECREAMENT:
-        if (value > 0)
-            value -= 1;
-        break;
-    case INFINITE:
-        value = -1;
-        break;
-    };
-
-    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_MAX, IntegerValue(value));
-}
-
 extern "C" void action_button_matrix_clicked(lv_event_t *e)
 {
     lv_obj_t *obj = lv_event_get_target_obj(e);
