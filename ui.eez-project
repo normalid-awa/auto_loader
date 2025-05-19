@@ -15,7 +15,7 @@
       "displayHeight": 240,
       "circularDisplay": false,
       "displayBorderRadius": 0,
-      "darkTheme": true,
+      "darkTheme": false,
       "colorFormat": "BGR",
       "targetPlatform": "",
       "resourceFiles": [],

@@ -66,7 +66,7 @@ extern "C" void action_toggle_dark_mode(lv_event_t *e)
     bool dark_mode = lv_obj_has_state(obj, LV_STATE_CHECKED);
     flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_DARK_MODE, BooleanValue(dark_mode));
     lv_disp_t *disp = lv_display_get_default();
-    lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), dark_mode, LV_FONT_DEFAULT);
+    lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), !dark_mode, LV_FONT_DEFAULT);
     lv_display_set_theme(disp, theme);
 }
 
