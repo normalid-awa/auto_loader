@@ -32,12 +32,12 @@ esp_err_t setup_nvs_preferences(void)
 
     ESP_LOGI(NVS_PREFERENCES_TAG, "NVS initialized");
 
-    int32_t startup_count = 0;
-    ESP_ERROR_CHECK(nvs_get_i32(app_nvs_handle, "startup_count", &startup_count));
-    ESP_ERROR_CHECK(nvs_set_i32(app_nvs_handle, "startup_count", ++startup_count));
+    uint32_t startup_count = 0;
+    ESP_ERROR_CHECK(nvs_get_u32(app_nvs_handle, "startup_count", &startup_count));
+    ESP_ERROR_CHECK(nvs_set_u32(app_nvs_handle, "startup_count", ++startup_count));
     ESP_ERROR_CHECK(nvs_commit(app_nvs_handle));
 
-    ESP_LOGI(NVS_PREFERENCES_TAG, "This is the %" PRIi32 "-th startup", startup_count);
+    ESP_LOGI(NVS_PREFERENCES_TAG, "This is the %" PRIu32 "-th startup", startup_count);
 
     return ESP_OK;
 }
