@@ -2,11 +2,15 @@
 #define NVS_PREFERENCES_H
 
 #include <esp_err.h>
+#include <stdbool.h>
 
 static const char *NVS_PREFERENCES_TAG = "nvs_preferences";
 static const char *NVS_PREFERENCES_NAMESPACE = "nvs_preferences";
 
 esp_err_t setup_nvs_preferences(void);
+
+esp_err_t load_bool(const char *key, bool *value);
+esp_err_t save_bool(const char *key, const bool value);
 
 esp_err_t load_i32(const char *key, int32_t *value);
 esp_err_t save_i32(const char *key, const int32_t value);
