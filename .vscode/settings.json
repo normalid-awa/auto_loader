@@ -150,6 +150,8 @@
 		"esp_task_wdt.h": "c",
 		"styles.h": "c",
 		"eez-flow.h": "c",
-		"stdint.h": "c"
+		"stdint.h": "c",
+		"nvs-preferences.h": "c",
+		"inttypes.h": "c"
 	}
 }
