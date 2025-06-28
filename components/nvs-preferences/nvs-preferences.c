@@ -51,8 +51,8 @@ esp_err_t __nvs_commit()
 esp_err_t load_i32(const char *key, int32_t *value)
 {
     esp_err_t err = nvs_get_i32(app_nvs_handle, key, value);
-    if (err = ESP_ERR_NVS_NOT_FOUND)
-        save_i32(key, value);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+        save_i32(key, *value);
     else
         ESP_RETURN_ON_ERROR(err, NVS_PREFERENCES_TAG, "Failed to get i32 %s", key);
     return ESP_OK;
@@ -68,8 +68,8 @@ esp_err_t load_u32(const char *key, uint32_t *value)
 {
     // ESP_RETURN_ON_ERROR(nvs_get_u32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to get u32 %s", key);
     esp_err_t err = nvs_get_u32(app_nvs_handle, key, value);
-    if (err = ESP_ERR_NVS_NOT_FOUND)
-        save_u32(key, value);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+        save_u32(key, *value);
     else
         ESP_RETURN_ON_ERROR(err, NVS_PREFERENCES_TAG, "Failed to get u32 %s", key);
     return ESP_OK;
