@@ -19,6 +19,7 @@
 #include "ui.h"
 #include "vars.h"
 #include "screens.h"
+#include "nvs-preferences.h"
 
 #pragma region "App Functions"
 
@@ -160,6 +161,7 @@ void app_main()
     setup_motor();
     setup_mag_detector();
     setup_ammo_counter();
+    ESP_ERROR_CHECK(setup_nvs_preferences());
 
     lvgl_init();
 

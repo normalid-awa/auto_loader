@@ -1,13 +1,21 @@
 #include "nvs-preferences.h"
+
 #include <stdio.h>
 #include <inttypes.h>
+
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "esp_system.h"
-#include "nvs_flash.h"
-#include "nvs.h"
 
-void setup_nvs_preferences(void)
+#include "esp_system.h"
+#include "esp_err.h"
+#include "esp_check.h"
+#include "esp_log.h"
+
+#include "nvs_flash.h"
+
+static nvs_handle_t app_nvs_handle;
+
+esp_err_t setup_nvs_preferences(void)
 {
     // Initialize NVS
     esp_err_t err = nvs_flash_init();
@@ -18,65 +26,83 @@ void setup_nvs_preferences(void)
         ESP_ERROR_CHECK(nvs_flash_erase());
         err = nvs_flash_init();
     }
-    ESP_ERROR_CHECK(err);
+    ESP_RETURN_ON_ERROR(err, NVS_PREFERENCES_TAG, "Failed to initialize NVS");
 
-    // Open
-    printf("\n");
-    printf("Opening Non-Volatile Storage (NVS) handle... ");
-    nvs_handle_t my_handle;
-    err = nvs_open("storage", NVS_READWRITE, &my_handle);
-    if (err != ESP_OK)
-    {
-        printf("Error (%s) opening NVS handle!\n", esp_err_to_name(err));
-    }
-    else
-    {
-        printf("Done\n");
+    ESP_RETURN_ON_ERROR(nvs_open(NVS_PREFERENCES_NAMESPACE, NVS_READWRITE, &app_nvs_handle), NVS_PREFERENCES_TAG, "Failed to open NVS");
 
-        // Read
-        printf("Reading restart counter from NVS ... ");
-        int32_t restart_counter = 0; // value will default to 0, if not set yet in NVS
-        err = nvs_get_i32(my_handle, "restart_counter", &restart_counter);
-        switch (err)
-        {
-        case ESP_OK:
-            printf("Done\n");
-            printf("Restart counter = %" PRIu32 "\n", restart_counter);
-            break;
-        case ESP_ERR_NVS_NOT_FOUND:
-            printf("The value is not initialized yet!\n");
-            break;
-        default:
-            printf("Error (%s) reading!\n", esp_err_to_name(err));
-        }
+    ESP_LOGI(NVS_PREFERENCES_TAG, "NVS initialized");
 
-        // Write
-        printf("Updating restart counter in NVS ... ");
-        restart_counter++;
-        err = nvs_set_i32(my_handle, "restart_counter", restart_counter);
-        printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+    int32_t startup_count = 0;
+    ESP_ERROR_CHECK(nvs_get_i32(app_nvs_handle, "startup_count", &startup_count));
+    ESP_ERROR_CHECK(nvs_set_i32(app_nvs_handle, "startup_count", ++startup_count));
+    ESP_ERROR_CHECK(nvs_commit(app_nvs_handle));
 
-        // Commit written value.
-        // After setting any values, nvs_commit() must be called to ensure changes are written
-        // to flash storage. Implementations may write to storage at other times,
-        // but this is not guaranteed.
-        printf("Committing updates in NVS ... ");
-        err = nvs_commit(my_handle);
-        printf((err != ESP_OK) ? "Failed!\n" : "Done\n");
+    ESP_LOGI(NVS_PREFERENCES_TAG, "This is the %" PRIi32 "-th startup", startup_count);
 
-        // Close
-        nvs_close(my_handle);
-    }
+    return ESP_OK;
+}
 
-    printf("\n");
+esp_err_t __nvs_commit()
+{
+    ESP_RETURN_ON_ERROR(nvs_commit(app_nvs_handle), NVS_PREFERENCES_TAG, "Failed to commit NVS");
+    return ESP_OK;
+}
 
-    // Restart module
-    for (int i = 10; i >= 0; i--)
-    {
-        printf("Restarting in %d seconds...\n", i);
-        vTaskDelay(1000 / portTICK_PERIOD_MS);
-    }
-    printf("Restarting now.\n");
-    fflush(stdout);
-    esp_restart();
+esp_err_t load_i32(const char *key, int32_t *value)
+{
+    ESP_RETURN_ON_ERROR(nvs_get_i32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to get i32 %s", key);
+    return ESP_OK;
+}
+
+esp_err_t save_i32(const char *key, const int32_t value)
+{
+    ESP_RETURN_ON_ERROR(nvs_set_i32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to set i32 %s to %" PRIi32, key, value);
+    return __nvs_commit(app_nvs_handle);
+}
+
+esp_err_t load_u32(const char *key, uint32_t *value)
+{
+    ESP_RETURN_ON_ERROR(nvs_get_u32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to get u32 %s", key);
+    return ESP_OK;
+}
+
+esp_err_t save_u32(const char *key, const uint32_t value)
+{
+    ESP_RETURN_ON_ERROR(nvs_set_u32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to set u32 %s to %" PRIu32, key, value);
+    return __nvs_commit(app_nvs_handle);
+}
+
+esp_err_t load_float(const char *key, float *value)
+{
+    size_t required_size;
+    ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, NULL, &required_size), NVS_PREFERENCES_TAG, "Failed to get size of str %s", key);
+    char *temp_val = malloc(required_size);
+    ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, temp_val, &required_size), NVS_PREFERENCES_TAG, "Failed to get str %s", key);
+    *value = (float)atof(temp_val);
+    free(temp_val);
+    return ESP_OK;
+}
+
+esp_err_t save_float(const char *key, const float value)
+{
+    int len = snprintf(NULL, 0, "%f", value);
+    char temp_val[len + 1];
+    snprintf(temp_val, len + 1, "%f", value);
+    ESP_RETURN_ON_ERROR(nvs_set_str(app_nvs_handle, key, temp_val), NVS_PREFERENCES_TAG, "Failed to set float %s to %f", key, value);
+    return __nvs_commit(app_nvs_handle);
+}
+
+esp_err_t load_str(const char *key, char *value)
+{
+    size_t required_size;
+    ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, NULL, &required_size), NVS_PREFERENCES_TAG, "Failed to get size of str %s", key);
+    value = malloc(required_size);
+    ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, value, &required_size), NVS_PREFERENCES_TAG, "Failed to get str %s", key);
+    return ESP_OK;
+}
+
+esp_err_t save_str(const char *key, const char *value)
+{
+    ESP_RETURN_ON_ERROR(nvs_set_str(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to set str %s to %s", key, value);
+    return __nvs_commit(app_nvs_handle);
 }

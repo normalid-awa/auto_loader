@@ -152,6 +152,10 @@
 		"eez-flow.h": "c",
 		"stdint.h": "c",
 		"nvs-preferences.h": "c",
-		"inttypes.h": "c"
+		"inttypes.h": "c",
+		"esp_system.h": "c",
+		"nvs_flash.h": "c",
+		"nvs.h": "c",
+		"esp_partition.h": "c"
 	}
 }
