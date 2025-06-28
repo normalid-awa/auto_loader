@@ -33,7 +33,7 @@ esp_err_t setup_nvs_preferences(void)
     ESP_LOGI(NVS_PREFERENCES_TAG, "NVS initialized");
 
     uint32_t startup_count = 0;
-    ESP_ERROR_CHECK(nvs_get_u32(app_nvs_handle, "startup_count", &startup_count));
+    ESP_ERROR_CHECK_WITHOUT_ABORT(nvs_get_u32(app_nvs_handle, "startup_count", &startup_count));
     ESP_ERROR_CHECK(nvs_set_u32(app_nvs_handle, "startup_count", ++startup_count));
     ESP_ERROR_CHECK(nvs_commit(app_nvs_handle));
 
@@ -50,7 +50,11 @@ esp_err_t __nvs_commit()
 
 esp_err_t load_i32(const char *key, int32_t *value)
 {
-    ESP_RETURN_ON_ERROR(nvs_get_i32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to get i32 %s", key);
+    esp_err_t err = nvs_get_i32(app_nvs_handle, key, value);
+    if (err = ESP_ERR_NVS_NOT_FOUND)
+        save_i32(key, value);
+    else
+        ESP_RETURN_ON_ERROR(err, NVS_PREFERENCES_TAG, "Failed to get i32 %s", key);
     return ESP_OK;
 }
 
@@ -62,7 +66,12 @@ esp_err_t save_i32(const char *key, const int32_t value)
 
 esp_err_t load_u32(const char *key, uint32_t *value)
 {
-    ESP_RETURN_ON_ERROR(nvs_get_u32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to get u32 %s", key);
+    // ESP_RETURN_ON_ERROR(nvs_get_u32(app_nvs_handle, key, value), NVS_PREFERENCES_TAG, "Failed to get u32 %s", key);
+    esp_err_t err = nvs_get_u32(app_nvs_handle, key, value);
+    if (err = ESP_ERR_NVS_NOT_FOUND)
+        save_u32(key, value);
+    else
+        ESP_RETURN_ON_ERROR(err, NVS_PREFERENCES_TAG, "Failed to get u32 %s", key);
     return ESP_OK;
 }
 
@@ -75,7 +84,14 @@ esp_err_t save_u32(const char *key, const uint32_t value)
 esp_err_t load_float(const char *key, float *value)
 {
     size_t required_size;
-    ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, NULL, &required_size), NVS_PREFERENCES_TAG, "Failed to get size of str %s", key);
+    esp_err_t err = nvs_get_str(app_nvs_handle, key, NULL, &required_size);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+    {
+        save_float(key, *value);
+        return ESP_OK;
+    }
+    else
+        ESP_RETURN_ON_ERROR(err, NVS_PREFERENCES_TAG, "Failed to get size of str %s", key);
     char *temp_val = malloc(required_size);
     ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, temp_val, &required_size), NVS_PREFERENCES_TAG, "Failed to get str %s", key);
     *value = (float)atof(temp_val);
@@ -95,7 +111,14 @@ esp_err_t save_float(const char *key, const float value)
 esp_err_t load_str(const char *key, char *value)
 {
     size_t required_size;
-    ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, NULL, &required_size), NVS_PREFERENCES_TAG, "Failed to get size of str %s", key);
+    esp_err_t err = nvs_get_str(app_nvs_handle, key, NULL, &required_size);
+    if (err == ESP_ERR_NVS_NOT_FOUND)
+    {
+        save_str(key, value);
+        return ESP_OK;
+    }
+    else
+        ESP_RETURN_ON_ERROR(err, NVS_PREFERENCES_TAG, "Failed to get size of str %s", key);
     value = malloc(required_size);
     ESP_RETURN_ON_ERROR(nvs_get_str(app_nvs_handle, key, value, &required_size), NVS_PREFERENCES_TAG, "Failed to get str %s", key);
     return ESP_OK;
