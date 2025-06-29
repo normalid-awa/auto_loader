@@ -684,7 +684,7 @@
                   "type": "LVGLTabWidget",
                   "left": 0,
                   "top": 0,
-                  "width": 270,
+                  "width": 280,
                   "height": 208,
                   "customInputs": [],
                   "customOutputs": [],
@@ -825,7 +825,8 @@
                               "flagScrollDirection": "",
                               "scrollSnapX": "",
                               "scrollSnapY": "",
-                              "checkedStateType": "literal",
+                              "checkedState": "dark_mode",
+                              "checkedStateType": "expression",
                               "disabledStateType": "literal",
                               "states": "",
                               "localStyles": {

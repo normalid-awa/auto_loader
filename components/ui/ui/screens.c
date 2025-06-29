@@ -48,6 +48,14 @@ static void event_handler_cb_main_obj1(lv_event_t *e) {
     (void)flowState;
     
     if (event == LV_EVENT_VALUE_CHANGED) {
+        lv_obj_t *ta = lv_event_get_target(e);
+        if (tick_value_change_obj != ta) {
+            bool value = lv_obj_has_state(ta, LV_STATE_CHECKED);
+            assignBooleanProperty(flowState, 14, 3, value, "Failed to assign Checked state");
+        }
+    }
+    
+    if (event == LV_EVENT_VALUE_CHANGED) {
         e->user_data = (void *)0;
         action_update_dark_mode(e);
     }
@@ -322,6 +330,16 @@ void tick_screen_main() {
         if (new_val != cur_val) {
             tick_value_change_obj = objects.obj3;
             lv_arc_set_value(objects.obj3, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        bool new_val = evalBooleanProperty(flowState, 14, 3, "Failed to evaluate Checked state");
+        bool cur_val = lv_obj_has_state(objects.obj1, LV_STATE_CHECKED);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.obj1;
+            if (new_val) lv_obj_add_state(objects.obj1, LV_STATE_CHECKED);
+            else lv_obj_clear_state(objects.obj1, LV_STATE_CHECKED);
             tick_value_change_obj = NULL;
         }
     }

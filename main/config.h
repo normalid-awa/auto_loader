@@ -1,3 +1,6 @@
+#ifndef GPIO_H
+#define GPIO_H
+
 #include "lvgl.h"
 #include "esp_lvgl_port.h"
 
@@ -21,9 +24,6 @@
 #include "esp_lcd_touch_cst816s.h"
 
 #include <sys/param.h>
-
-#ifndef GPIO_H
-#define GPIO_H
 
 #define MAG_DETECTOR_GPIO GPIO_NUM_41
 #define AMMO_COUNTER_GPIO GPIO_NUM_40
