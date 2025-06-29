@@ -33,7 +33,7 @@ mcpwm_cmpr_handle_t motor_comparator = NULL;
 
 void set_angle(int angle)
 {
-    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(motor_comparator, (angle - 0) * (2000 - 1000) / (180 - 0) + 1000));
+    ESP_ERROR_CHECK(mcpwm_comparator_set_compare_value(motor_comparator, (uint32_t)((angle - 0) * (2000 - 1000) / (180 - 0) + 1000)));
 }
 
 void setup_motor()
@@ -81,7 +81,7 @@ void setup_motor()
 static void on_mag_inserted(void *arg, void *usr_data)
 {
     if (get_max_ammo() == -1 || AMMO_COUNT < get_max_ammo())
-        set_angle(20);
+        set_angle((int)(90 - (90 * ((float)get_motor_force() / 100))));
     else
         set_angle(90);
 }
@@ -202,6 +202,15 @@ void action_update_brightness(lv_event_t *e)
     lvgl_port_unlock();
 }
 
+void action_update_motor_force(lv_event_t *e)
+{
+    lvgl_port_lock(0);
+    lv_obj_t *obj = lv_event_get_target_obj(e);
+    int value = lv_slider_get_value(obj);
+    set_motor_force(value);
+    lvgl_port_unlock();
+}
+
 void load_preferences()
 {
     uint32_t brightness = 255;
@@ -211,6 +220,10 @@ void load_preferences()
     bool dark_mode = true;
     load_bool("dark_mode", &dark_mode);
     set_dark_mode(dark_mode);
+
+    uint32_t motor_force = 80;
+    load_u32("motor_force", &motor_force);
+    set_motor_force(motor_force);
 }
 
 void app_main()

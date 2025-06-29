@@ -25,6 +25,9 @@ extern "C"
     int get_brightness();
     void set_brightness(int brightness);
 
+    int get_motor_force();
+    void set_motor_force(int force);
+
 #ifdef __cplusplus
 }
 #endif

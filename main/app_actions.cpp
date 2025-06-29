@@ -64,3 +64,14 @@ void set_brightness(int brightness)
     save_u32("brightness", brightness);
     lvgl_port_unlock();
 }
+
+int get_motor_force()
+{
+    return flow::getGlobalVariable(FLOW_GLOBAL_VARIABLE_MOTOR_FORCE).getInt();
+}
+void set_motor_force(int force)
+{
+    flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_MOTOR_FORCE, IntegerValue((int32_t)force));
+    ESP_LOGD(ACTION_TAG, "Set motor force: %d", force);
+    save_u32("motor_force", force);
+}
