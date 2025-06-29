@@ -156,6 +156,7 @@
 		"esp_system.h": "c",
 		"nvs_flash.h": "c",
 		"nvs.h": "c",
-		"esp_partition.h": "c"
+		"esp_partition.h": "c",
+		"*.component_hash": "cpp"
 	}
 }

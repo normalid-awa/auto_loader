@@ -1,5 +1,3 @@
-#include "lvgl.h"
-
 #ifndef APP_ACTIONS_H
 #define APP_ACTIONS_H
 

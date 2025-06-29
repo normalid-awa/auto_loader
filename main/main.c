@@ -21,10 +21,11 @@
 #include "screens.h"
 #include "nvs-preferences.h"
 
-#pragma region "App Functions"
-
+static const char *ACTION_TAG = "Main";
 static const char *AMMO_COUNTER_TAG = "Ammo Counter";
 static const char *MAG_DETECTOR_TAG = "Mag Detector";
+
+#pragma region "App Functions"
 
 static int AMMO_COUNT = 0;
 
@@ -156,22 +157,6 @@ void app_tick()
     }
 }
 
-void app_main()
-{
-    setup_motor();
-    setup_mag_detector();
-    setup_ammo_counter();
-    ESP_ERROR_CHECK(setup_nvs_preferences());
-
-    lvgl_init();
-
-    lvgl_port_lock(0);
-    ui_init();
-    lvgl_port_unlock();
-
-    xTaskCreate(app_tick, "app_tick", 4096, NULL, 1, NULL);
-}
-
 void action_update_max_ammo(lv_event_t *e)
 {
     lvgl_port_lock(0);
@@ -204,9 +189,7 @@ void action_update_dark_mode(lv_event_t *e)
     lvgl_port_lock(0);
     lv_obj_t *obj = lv_event_get_target_obj(e);
     bool dark_mode = lv_obj_has_state(obj, LV_STATE_CHECKED);
-    lv_disp_t *disp = lv_display_get_default();
-    lv_theme_t *theme = lv_theme_default_init(disp, lv_palette_main(LV_PALETTE_BLUE), lv_palette_main(LV_PALETTE_RED), !dark_mode, LV_FONT_DEFAULT);
-    lv_display_set_theme(disp, theme);
+    set_dark_mode(dark_mode);
     lvgl_port_unlock();
 }
 
@@ -215,7 +198,34 @@ void action_update_brightness(lv_event_t *e)
     lvgl_port_lock(0);
     lv_obj_t *obj = lv_event_get_target_obj(e);
     int value = lv_slider_get_value(obj);
+    set_brightness(value);
+    lvgl_port_unlock();
+}
+
+void load_preferences()
+{
+    uint32_t brightness = 255;
+    load_u32("brightness", &brightness);
+    set_brightness(brightness);
+
+    bool dark_mode = true;
+    load_bool("dark_mode", &dark_mode);
+    set_dark_mode(dark_mode);
+}
+
+void app_main()
+{
+    setup_motor();
+    setup_mag_detector();
+    setup_ammo_counter();
+    ESP_ERROR_CHECK(setup_nvs_preferences());
+
+    lvgl_init();
+
+    lvgl_port_lock(0);
+    ui_init();
     lvgl_port_unlock();
 
-    set_lcd_brightness(value / 255.0f);
+    load_preferences();
+    xTaskCreate(app_tick, "app_tick", 4096, NULL, 1, NULL);
 }
