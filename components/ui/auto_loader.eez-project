@@ -963,6 +963,7 @@
                               "flagScrollDirection": "",
                               "scrollSnapX": "",
                               "scrollSnapY": "",
+                              "checkedState": false,
                               "checkedStateType": "literal",
                               "disabledStateType": "literal",
                               "states": "",
@@ -998,6 +999,7 @@
                             }
                           ],
                           "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+                          "hiddenFlag": false,
                           "hiddenFlagType": "literal",
                           "clickableFlag": true,
                           "clickableFlagType": "literal",
@@ -1032,8 +1034,8 @@
                         "definition": {
                           "MAIN": {
                             "DEFAULT": {
-                              "pad_left": 10,
-                              "pad_right": 10,
+                              "pad_left": 30,
+                              "pad_right": 30,
                               "pad_bottom": 10,
                               "pad_top": 10
                             }

@@ -164,7 +164,7 @@ void lvgl_init(void)
 /// @param brightness 0-1 (percentage)
 void set_lcd_brightness(float brightness)
 {
-    brightness = MIN(MAX(brightness, 0.1f), 0.95f);
+    brightness = MIN(MAX(brightness, 0.05f), 0.99f);
     int duty = (2 << (LCD_LEDC_RES - 1)) * brightness;
     uint32_t uduty = (uint32_t)duty;
     ESP_ERROR_CHECK(ledc_set_duty(LEDC_LOW_SPEED_MODE, LCD_LEDC_CH, uduty));
