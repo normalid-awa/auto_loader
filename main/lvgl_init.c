@@ -146,7 +146,7 @@ static void app_lvgl_init(esp_lcd_panel_io_handle_t lcd_io, esp_lcd_panel_handle
     lvgl_touch_indev = lvgl_port_add_touch(&touch_cfg);
 
     lv_display_set_default(lvgl_disp);
-    lv_display_set_rotation(lvgl_disp, LV_DISP_ROTATION_90);
+    lv_display_set_rotation(lvgl_disp, LV_DISPLAY_ROTATION_90);
 }
 
 void lvgl_init(void)

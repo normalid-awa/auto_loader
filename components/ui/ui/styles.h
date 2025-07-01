@@ -18,9 +18,9 @@ void add_style_tab_style(lv_obj_t *obj);
 void remove_style_tab_style(lv_obj_t *obj);
 
 // Style: setting_slider_style
-lv_style_t *get_style_setting_slider_style_KNOB_DEFAULT();
 lv_style_t *get_style_setting_slider_style_MAIN_DEFAULT();
 lv_style_t *get_style_setting_slider_style_INDICATOR_DEFAULT();
+lv_style_t *get_style_setting_slider_style_KNOB_DEFAULT();
 void add_style_setting_slider_style(lv_obj_t *obj);
 void remove_style_setting_slider_style(lv_obj_t *obj);
 

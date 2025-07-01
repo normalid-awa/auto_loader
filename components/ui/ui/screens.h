@@ -28,6 +28,15 @@ enum ScreensEnum {
 void create_screen_main();
 void tick_screen_main();
 
+enum Themes {
+    THEME_ID_DEFAULT,
+};
+enum Colors {
+    COLOR_ID_ACTIVE,
+};
+void change_color_theme(uint32_t themeIndex);
+extern uint32_t theme_colors[1][1];
+
 void tick_screen_by_id(enum ScreensEnum screenId);
 void tick_screen(int screen_index);
 
