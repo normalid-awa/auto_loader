@@ -211,6 +211,18 @@ void action_update_motor_force(lv_event_t *e)
     lvgl_port_unlock();
 }
 
+void action_move_motor(lv_event_t *e)
+{
+    lvgl_port_lock(0);
+    lv_obj_t *obj = lv_event_get_target_obj(e);
+    int direction = (int)lv_event_get_user_data(e);
+    lvgl_port_unlock();
+
+    set_angle((int)(90 + direction * (90 * ((float)get_motor_force() / 100))));
+    vTaskDelay(pdMS_TO_TICKS(100));
+    set_angle(90);
+}
+
 void load_preferences()
 {
     uint32_t brightness = 255;

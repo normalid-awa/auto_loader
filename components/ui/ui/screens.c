@@ -13,7 +13,7 @@
 objects_t objects;
 lv_obj_t *tick_value_change_obj;
 
-static void event_handler_cb_main_obj4(lv_event_t *e) {
+static void event_handler_cb_main_obj6(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
@@ -99,6 +99,28 @@ static void event_handler_cb_main_obj3(lv_event_t *e) {
     }
 }
 
+static void event_handler_cb_main_obj4(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    (void)flowState;
+    
+    if (event == LV_EVENT_LONG_PRESSED_REPEAT) {
+        e->user_data = (void *)-1;
+        action_move_motor(e);
+    }
+}
+
+static void event_handler_cb_main_obj5(lv_event_t *e) {
+    lv_event_code_t event = lv_event_get_code(e);
+    void *flowState = lv_event_get_user_data(e);
+    (void)flowState;
+    
+    if (event == LV_EVENT_LONG_PRESSED_REPEAT) {
+        e->user_data = (void *)1;
+        action_move_motor(e);
+    }
+}
+
 void create_screen_main() {
     void *flowState = getFlowState(0, 0);
     (void)flowState;
@@ -155,7 +177,7 @@ void create_screen_main() {
                                         lv_obj_t *parent_obj = obj;
                                         {
                                             lv_obj_t *obj = lv_label_create(parent_obj);
-                                            objects.obj5 = obj;
+                                            objects.obj7 = obj;
                                             lv_obj_set_pos(obj, LV_PCT(52), LV_PCT(50));
                                             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                                             lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -164,7 +186,7 @@ void create_screen_main() {
                                         }
                                         {
                                             lv_obj_t *obj = lv_label_create(parent_obj);
-                                            objects.obj6 = obj;
+                                            objects.obj8 = obj;
                                             lv_obj_set_pos(obj, LV_PCT(0), LV_PCT(32));
                                             lv_obj_set_size(obj, LV_PCT(50), LV_SIZE_CONTENT);
                                             lv_obj_set_style_text_font(obj, &lv_font_montserrat_38, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -181,13 +203,13 @@ void create_screen_main() {
                                         }
                                         {
                                             lv_obj_t *obj = lv_arc_create(parent_obj);
-                                            objects.obj4 = obj;
+                                            objects.obj6 = obj;
                                             lv_obj_set_pos(obj, 0, LV_PCT(0));
                                             lv_obj_set_size(obj, 170, 170);
                                             lv_arc_set_range(obj, 0, 100);
                                             lv_arc_set_bg_start_angle(obj, 92);
                                             lv_arc_set_bg_end_angle(obj, 88);
-                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj4, LV_EVENT_ALL, flowState);
+                                            lv_obj_add_event_cb(obj, event_handler_cb_main_obj6, LV_EVENT_ALL, flowState);
                                             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE);
                                             lv_obj_set_style_opa(obj, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
                                             lv_obj_set_style_arc_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]), LV_PART_INDICATOR | LV_STATE_DEFAULT);
@@ -312,7 +334,7 @@ void create_screen_main() {
                                         lv_obj_t *parent_obj = obj;
                                         {
                                             lv_obj_t *obj = lv_label_create(parent_obj);
-                                            objects.obj7 = obj;
+                                            objects.obj9 = obj;
                                             lv_obj_set_pos(obj, 0, 0);
                                             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                                             lv_label_set_text(obj, "");
@@ -325,6 +347,82 @@ void create_screen_main() {
                                             lv_obj_add_event_cb(obj, event_handler_cb_main_obj3, LV_EVENT_ALL, flowState);
                                             lv_obj_add_flag(obj, LV_OBJ_FLAG_OVERFLOW_VISIBLE);
                                             add_style_setting_slider_style(obj);
+                                        }
+                                    }
+                                }
+                                {
+                                    lv_obj_t *obj = lv_obj_create(parent_obj);
+                                    lv_obj_set_pos(obj, 0, 0);
+                                    lv_obj_set_size(obj, LV_PCT(100), 60);
+                                    lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                    add_style_setting_item(obj);
+                                    {
+                                        lv_obj_t *parent_obj = obj;
+                                        {
+                                            lv_obj_t *obj = lv_label_create(parent_obj);
+                                            lv_obj_set_pos(obj, 0, 0);
+                                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                                            lv_label_set_text(obj, "Move motor");
+                                        }
+                                        {
+                                            lv_obj_t *obj = lv_obj_create(parent_obj);
+                                            lv_obj_set_pos(obj, 0, 0);
+                                            lv_obj_set_size(obj, LV_PCT(100), LV_PCT(100));
+                                            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_flex_grow(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_layout(obj, LV_LAYOUT_FLEX, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_flex_flow(obj, LV_FLEX_FLOW_ROW, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_pad_right(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_pad_left(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_pad_bottom(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            lv_obj_set_style_pad_top(obj, 5, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                            {
+                                                lv_obj_t *parent_obj = obj;
+                                                {
+                                                    lv_obj_t *obj = lv_button_create(parent_obj);
+                                                    objects.obj4 = obj;
+                                                    lv_obj_set_pos(obj, 0, 0);
+                                                    lv_obj_set_size(obj, LV_PCT(50), LV_PCT(100));
+                                                    lv_obj_add_event_cb(obj, event_handler_cb_main_obj4, LV_EVENT_ALL, flowState);
+                                                    lv_obj_set_style_flex_grow(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                                    {
+                                                        lv_obj_t *parent_obj = obj;
+                                                        {
+                                                            lv_obj_t *obj = lv_label_create(parent_obj);
+                                                            lv_obj_set_pos(obj, 0, 0);
+                                                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                                                            lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                                            lv_label_set_text(obj, "<");
+                                                        }
+                                                    }
+                                                }
+                                                {
+                                                    lv_obj_t *obj = lv_button_create(parent_obj);
+                                                    objects.obj5 = obj;
+                                                    lv_obj_set_pos(obj, 0, 0);
+                                                    lv_obj_set_size(obj, LV_PCT(50), LV_PCT(100));
+                                                    lv_obj_add_event_cb(obj, event_handler_cb_main_obj5, LV_EVENT_ALL, flowState);
+                                                    lv_obj_set_style_flex_grow(obj, 1, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                                    {
+                                                        lv_obj_t *parent_obj = obj;
+                                                        {
+                                                            lv_obj_t *obj = lv_label_create(parent_obj);
+                                                            lv_obj_set_pos(obj, 0, 0);
+                                                            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+                                                            lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                                                            lv_label_set_text(obj, ">");
+                                                        }
+                                                    }
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -344,41 +442,41 @@ void tick_screen_main() {
     (void)flowState;
     {
         const char *new_val = evalTextProperty(flowState, 5, 3, "Failed to evaluate Text in Label widget");
-        const char *cur_val = lv_label_get_text(objects.obj5);
+        const char *cur_val = lv_label_get_text(objects.obj7);
         if (strcmp(new_val, cur_val) != 0) {
-            tick_value_change_obj = objects.obj5;
-            lv_label_set_text(objects.obj5, new_val);
+            tick_value_change_obj = objects.obj7;
+            lv_label_set_text(objects.obj7, new_val);
             tick_value_change_obj = NULL;
         }
     }
     {
         const char *new_val = evalTextProperty(flowState, 6, 3, "Failed to evaluate Text in Label widget");
-        const char *cur_val = lv_label_get_text(objects.obj6);
+        const char *cur_val = lv_label_get_text(objects.obj8);
         if (strcmp(new_val, cur_val) != 0) {
-            tick_value_change_obj = objects.obj6;
-            lv_label_set_text(objects.obj6, new_val);
+            tick_value_change_obj = objects.obj8;
+            lv_label_set_text(objects.obj8, new_val);
             tick_value_change_obj = NULL;
         }
     }
     {
         int32_t new_val = evalIntegerProperty(flowState, 8, 3, "Failed to evaluate Range max in Arc widget");
-        int32_t cur_val = lv_arc_get_max_value(objects.obj4);
+        int32_t cur_val = lv_arc_get_max_value(objects.obj6);
         if (new_val != cur_val) {
-            tick_value_change_obj = objects.obj4;
-            int16_t min = lv_arc_get_min_value(objects.obj4);
+            tick_value_change_obj = objects.obj6;
+            int16_t min = lv_arc_get_min_value(objects.obj6);
             int16_t max = new_val;
             if (min < max) {
-                lv_arc_set_range(objects.obj4, min, max);
+                lv_arc_set_range(objects.obj6, min, max);
             }
             tick_value_change_obj = NULL;
         }
     }
     {
         int32_t new_val = evalIntegerProperty(flowState, 8, 4, "Failed to evaluate Value in Arc widget");
-        int32_t cur_val = lv_arc_get_value(objects.obj4);
+        int32_t cur_val = lv_arc_get_value(objects.obj6);
         if (new_val != cur_val) {
-            tick_value_change_obj = objects.obj4;
-            lv_arc_set_value(objects.obj4, new_val);
+            tick_value_change_obj = objects.obj6;
+            lv_arc_set_value(objects.obj6, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -403,10 +501,10 @@ void tick_screen_main() {
     }
     {
         const char *new_val = evalTextProperty(flowState, 19, 3, "Failed to evaluate Text in Label widget");
-        const char *cur_val = lv_label_get_text(objects.obj7);
+        const char *cur_val = lv_label_get_text(objects.obj9);
         if (strcmp(new_val, cur_val) != 0) {
-            tick_value_change_obj = objects.obj7;
-            lv_label_set_text(objects.obj7, new_val);
+            tick_value_change_obj = objects.obj9;
+            lv_label_set_text(objects.obj9, new_val);
             tick_value_change_obj = NULL;
         }
     }
@@ -424,7 +522,7 @@ void tick_screen_main() {
 void change_color_theme(uint32_t theme_index) {
     lv_style_set_bg_grad_color(get_style_setting_slider_style_INDICATOR_DEFAULT(), lv_color_hex(theme_colors[theme_index][0]));
     
-    lv_obj_set_style_arc_color(objects.obj4, lv_color_hex(theme_colors[theme_index][0]), LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_color(objects.obj6, lv_color_hex(theme_colors[theme_index][0]), LV_PART_INDICATOR | LV_STATE_DEFAULT);
     
     lv_obj_set_style_bg_color(objects.obj1, lv_color_hex(theme_colors[theme_index][0]), LV_PART_INDICATOR | LV_STATE_CHECKED);
     
@@ -435,7 +533,7 @@ extern void add_style(lv_obj_t *obj, int32_t styleIndex);
 extern void remove_style(lv_obj_t *obj, int32_t styleIndex);
 
 static const char *screen_names[] = { "Main" };
-static const char *object_names[] = { "main", "obj0", "obj1", "obj2", "obj3", "obj4", "obj5", "obj6", "obj7" };
+static const char *object_names[] = { "main", "obj0", "obj1", "obj2", "obj3", "obj4", "obj5", "obj6", "obj7", "obj8", "obj9" };
 static const char *style_names[] = { "setting_item", "tab_style", "setting_slider_style" };
 static const char *theme_names[] = { "Default" };
 
