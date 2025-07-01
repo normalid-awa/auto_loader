@@ -178,7 +178,7 @@ void create_screen_main() {
                                         {
                                             lv_obj_t *obj = lv_label_create(parent_obj);
                                             objects.obj7 = obj;
-                                            lv_obj_set_pos(obj, LV_PCT(52), LV_PCT(50));
+                                            lv_obj_set_pos(obj, LV_PCT(53), LV_PCT(50));
                                             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                                             lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_LEFT, LV_PART_MAIN | LV_STATE_DEFAULT);
                                             lv_obj_set_style_text_font(obj, &lv_font_montserrat_22, LV_PART_MAIN | LV_STATE_DEFAULT);
